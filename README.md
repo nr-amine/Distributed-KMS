@@ -126,3 +126,7 @@ Kill Terminal 3 (`Ctrl+C`), then run the reconstruct command again. It still wor
 ## Project Context
 
 This is a portfolio/passion-project. The mathematical foundation (Lagrange interpolation over a finite field) is covered in the L2 curriculum, the implementation challenge was making it run efficiently without heavyweight dependencies.
+
+### Side note:
+the current implementation uses http, sharing the aes key to the main orchestrator by http is insecure and completely invalidates the security of this
+TO DO: change http to https
