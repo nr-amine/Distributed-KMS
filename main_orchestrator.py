@@ -1,7 +1,5 @@
-import ctypes
 import httpx
 import asyncio
-import os
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import py_engine_interpretor as py_interp
@@ -72,6 +70,9 @@ async def reconstruct_secret(secret_id : str):
 
     rec_ints = py_interp.lagrange_interpolation_batch(xs, ys_matrix, num_shares, num_bytes)
     
-    # Safety guard: ensure strict 0-255 boundary for Python bytes
-    cleaned_bytes = bytes([b & 0xFF for b in rec_ints])
+    cleaned_bytes = bytes([b & 0xFF for b in rec_ints]) # This was by no means my solution,
+    #it came to my attention that the C lagrange interpolation can produce 256, hense the incompatibility with
+    #the bytes type in python, the solution was to simply clean the ints by applying a bitwise AND with 0xFF
+    # effectively keeping only the least significant byte of each integer. This way, we ensure that the resulting 
+    # bytes are valid and can be correctly reconstructed into the original secret.
     return {"secret": cleaned_bytes.hex()}
