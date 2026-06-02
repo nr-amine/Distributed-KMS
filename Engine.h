@@ -3,7 +3,6 @@
 #define ENGINE_H
 
 #include <stdio.h>
-#include <bcrypt.h>
 #include <stdlib.h>
 
 struct Share {
@@ -23,6 +22,6 @@ void generate_random_coeffs(int *coeffs, int degree);
 void evaluate_share(struct Share *share, int x, int *coeffs, int degree);
 int lagrange_interpolation(int x, struct Share *shares, int n);
 void lagrange_interpolation_batch(int *xs, int *ys_matrix, int num_shares, int num_bytes, int *out_secret);
-void evaluate_share_batch(int x, int *secret_bytes, int num_bytes, int degree, int *out_y);
+void evaluate_share_batch(int *xs, int num_shares, int *secret_bytes, int num_bytes, int degree, int *out_ys_matrix);
 
-#endif // ENGINE_H
+#endif /* ENGINE_H */

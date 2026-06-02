@@ -7,7 +7,6 @@
 
 #include "Engine.h"
 #ifdef _WIN32
-    #include <windows.h>
     #define SHOULD_EXPORT __declspec(dllexport)
 #else
     #define SHOULD_EXPORT
@@ -74,6 +73,9 @@ int mod_sub(int a, int b, int p) {
 // ------------Random number generation using Windows Crypto API ------------
 
 #ifdef _WIN32
+
+#include <windows.h>
+#include <bcrypt.h>
 
 SHOULD_EXPORT int generate_random_signed_int() {
     int random_value;

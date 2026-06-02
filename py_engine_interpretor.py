@@ -34,14 +34,20 @@ lib.generate_random_coeffs.restype = None
 def generate_random_coeffs(coeffs, degree):
     lib.generate_random_coeffs(coeffs, degree)
 
-lib.evaluate_share_batch.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_int), ctypes.c_int, ctypes.c_int, ctypes.POINTER(ctypes.c_int)]
+lib.evaluate_share_batch.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_int, ctypes.POINTER(ctypes.c_int), ctypes.c_int, ctypes.c_int, ctypes.POINTER(ctypes.c_int)]
 lib.evaluate_share_batch.restype = None
 
-def evaluate_share_batch(x, secret_bytes, num_bytes, degree):
+def evaluate_share_batch(xs, secret_bytes, num_bytes, degree):
+    num_shares = len(xs)
+    xs_arr = (ctypes.c_int * num_shares)(*xs)
     secret_arr = (ctypes.c_int * num_bytes)(*secret_bytes)
-    out_y = (ctypes.c_int * num_bytes)()
-    lib.evaluate_share_batch(x, secret_arr, num_bytes, degree, out_y)
-    return list(out_y)
+    
+    out_ys = (ctypes.c_int * (num_shares * num_bytes))()
+    
+    lib.evaluate_share_batch(xs_arr, num_shares, secret_arr, num_bytes, degree, out_ys)
+    
+    flat_list = list(out_ys)
+    return [flat_list[i * num_bytes : (i + 1) * num_bytes] for i in range(num_shares)]
 
 lib.lagrange_interpolation_batch.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int), ctypes.c_int, ctypes.c_int, ctypes.POINTER(ctypes.c_int)]
 lib.lagrange_interpolation_batch.restype = None
