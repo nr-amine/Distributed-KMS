@@ -12,7 +12,7 @@ The goal was to build something that actually connected my two majors. The math 
 
 ## How It Works
 
-### 1. The `P = 257` Trick — Avoiding Big Integers
+### 1. Choosing P=257 to avoid big int libs
 
 Standard Shamir's Secret Sharing requires a prime `P` strictly greater than the secret. For a full 256-bit key, that means dealing with enormous integers, usually through libraries like GMP.
 
