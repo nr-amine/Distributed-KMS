@@ -135,4 +135,33 @@ SHOULD_EXPORT int lagrange_interpolation(int x, struct Share *shares, int n) {
     return S;   
 }
 
+SHOULD_EXPORT void evaluate_share_batch(int x, int *secret_bytes, int num_bytes, int degree, int *out_y) {
+    int *coeffs = (int *)malloc((degree + 1) * sizeof(int));
+    
+    for(int b = 0; b < num_bytes; b++) {
+        generate_random_coeffs(coeffs, degree);
+        coeffs[0] = secret_bytes[b];
+        
+        int res = 0;
+        for(int i = degree; i >= 0; i--) {
+            res = mod_add(mod_mult(res, x, P), coeffs[i], P);
+        }
+        out_y[b] = res;
+    }
+    
+    free(coeffs);
+}
 
+SHOULD_EXPORT void lagrange_interpolation_batch(int *xs, int *ys_matrix, int num_shares, int num_bytes, int *out_secret) {
+    struct Share *shares = (struct Share *)malloc(num_shares * sizeof(struct Share));
+    
+    for(int b = 0; b < num_bytes; b++) {
+        for(int i = 0; i < num_shares; i++) {
+            shares[i].x = xs[i];
+            shares[i].y = ys_matrix[i * num_bytes + b]; 
+        }
+        out_secret[b] = lagrange_interpolation(0, shares, num_shares);
+    }
+    
+    free(shares);
+}
