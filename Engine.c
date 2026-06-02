@@ -107,7 +107,7 @@ int generate_random_signed_int() {
 //------------- Shamir's Secret Sharing Scheme functions ------------
 
 SHOULD_EXPORT void generate_random_coeffs(int *coeffs, int degree) {
-    for (int i = 0; i < degree; i++) {
+    for (int i = 1; i <= degree; i++) {
         coeffs[i] = mod(generate_random_signed_int(), P);
     }
 }
