@@ -2,7 +2,6 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include <windows.h>
 #include <stdio.h>
 #include <bcrypt.h>
 #include <stdlib.h>

@@ -3,7 +3,7 @@
 // The engine provides functions to create shares, reconstruct the secret, and manage the shares.
 // to avoid using big int libs or galois fields,
 // in this project I process byte by byte modulo 257, assuming the secret is an 
-// aes key of 16 bytes = 256 bits < 257, so we can safely use int to represent each byte and perform the necessary arithmetic operations.
+// aes key of 32 bytes = 256 bits < 257, so we can safely use int to represent each byte and perform the necessary arithmetic operations.
 
 #include "Engine.h"
 #ifdef _WIN32
