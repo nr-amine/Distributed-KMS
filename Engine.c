@@ -14,7 +14,7 @@
 #endif
 // ------------ Functions for finite field arithmetic ------------
 
-int P = 257; // A prime number greater than 256 to ensure we can represent all byte values and perform modular arithmetic correctly.
+#define P 257 // A prime number greater than 256 to ensure we can represent all byte values and perform modular arithmetic correctly.
 
 int mod(int a, int b) {
     int r = a % b;
