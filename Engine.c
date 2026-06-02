@@ -7,6 +7,7 @@
 
 #include "Engine.h"
 #ifdef _WIN32
+    #include <windows.h>
     #define SHOULD_EXPORT __declspec(dllexport)
 #else
     #define SHOULD_EXPORT
