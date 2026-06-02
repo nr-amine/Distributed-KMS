@@ -23,9 +23,9 @@ int mod_mult(int a, int b, int p);
 int mod_add(int a, int b, int p);
 int mod_sub(int a, int b, int p);
 int generate_random_signed_int();
-void generate_random_coeffs(int *coeffs, int degree, int p);
-void evaluate_share(struct Share *share, int x, int *coeffs, int degree, int p);
-int lagrange_interpolation(int x, struct Share *shares, int n, int p);
+void generate_random_coeffs(int *coeffs, int degree);
+void evaluate_share(struct Share *share, int x, int *coeffs, int degree);
+int lagrange_interpolation(int x, struct Share *shares, int n);
 
 
 #endif // ENGINE_H

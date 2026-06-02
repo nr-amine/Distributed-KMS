@@ -1,6 +1,9 @@
 // This file is the main engine for the key management system.
 // It uses shamir's secret sharing scheme to split a secret into multiple shares and reconstruct it when needed.
 // The engine provides functions to create shares, reconstruct the secret, and manage the shares.
+// to avoid using big int libs or galois fields,
+// in this project I process byte by byte modulo 257, assuming the secret is an 
+// aes key of 16 bytes = 256 bits < 257, so we can safely use int to represent each byte and perform the necessary arithmetic operations.
 
 #include "Engine.h"
 #ifdef _WIN32
@@ -10,6 +13,7 @@
 #endif
 // ------------ Functions for finite field arithmetic ------------
 
+int P = 257; // A prime number greater than 256 to ensure we can represent all byte values and perform modular arithmetic correctly.
 
 int mod(int a, int b) {
     int r = a % b;
@@ -101,33 +105,34 @@ int generate_random_signed_int() {
 
 //------------- Shamir's Secret Sharing Scheme functions ------------
 
-SHOULD_EXPORT void generate_random_coeffs(int *coeffs, int degree, int p) {
+SHOULD_EXPORT void generate_random_coeffs(int *coeffs, int degree) {
     for (int i = 0; i < degree; i++) {
-        coeffs[i] = mod(generate_random_signed_int(), p);
+        coeffs[i] = mod(generate_random_signed_int(), P);
     }
 }
 
-SHOULD_EXPORT void evaluate_share(struct Share *share, int x, int *coeffs, int degre, int p) {
+SHOULD_EXPORT void evaluate_share(struct Share *share, int x, int *coeffs, int degree) {
     int res = 0;
-    for(int i=degre; i>=0; i--) {
-        res = mod_add(mod_mult(res, x, p), coeffs[i], p);
+    for(int i = degree; i >= 0; i--) {
+        res = mod_add(mod_mult(res, x, P), coeffs[i], P);
     }
     share->x = x;
     share->y = res;
 }
 
-SHOULD_EXPORT int lagrange_interpolation(int x, struct Share *shares, int n, int p) {
+SHOULD_EXPORT int lagrange_interpolation(int x, struct Share *shares, int n) {
     int S = 0; 
-    for(int i=0; i<n; i++) {
+    for(int i = 0; i < n; i++) {
         int num = 1; int den = 1;
-        for(int j=0; j<n; j++) {
+        for(int j = 0; j < n; j++) {
             if (i != j) {
-                 num = mod_mult(num, mod_sub(0, shares[j].x, p), p);
-                 den = mod_mult(den, mod_sub(shares[i].x, shares[j].x, p), p);
+                 num = mod_mult(num, mod_sub(0, shares[j].x, P), P);
+                 den = mod_mult(den, mod_sub(shares[i].x, shares[j].x, P), P);
             }
         }
-        S = mod_add(S, mod_mult(shares[i].y, mod_div(num, den, p), p), p);
+        S = mod_add(S, mod_mult(shares[i].y, mod_div(num, den, P), P), P);
     }
     return S;   
 }
+
 
