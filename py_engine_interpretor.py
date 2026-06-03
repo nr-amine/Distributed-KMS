@@ -45,7 +45,8 @@ def evaluate_share_batch(xs, secret_bytes, num_bytes, degree):
     out_ys = (ctypes.c_int * (num_shares * num_bytes))()
     
     lib.evaluate_share_batch(xs_arr, num_shares, secret_arr, num_bytes, degree, out_ys)
-    
+    if out_ys[0] == -1:
+        raise MemoryError("Memory allocation failed in C code")
     flat_list = list(out_ys)
     return [flat_list[i * num_bytes : (i + 1) * num_bytes] for i in range(num_shares)]
 
@@ -60,4 +61,6 @@ def lagrange_interpolation_batch(xs, ys_matrix, num_shares, num_bytes):
     
     out_secret = (ctypes.c_int * num_bytes)()
     lib.lagrange_interpolation_batch(xs_arr, ys_arr, num_shares, num_bytes, out_secret)
+    if out_secret[0] == -1:
+        raise MemoryError("Memory allocation failed in C code")
     return list(out_secret)

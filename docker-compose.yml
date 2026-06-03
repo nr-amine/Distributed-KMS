@@ -1,0 +1,44 @@
+services:
+  orchestrator:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - NETWORKS=[{"name":"Paris_testnet", "url":"http://paris_node:8001"}, {"name":"Mariana_trench", "url":"http://mariana_trench_testnet:8002"}, {"name":"Moon_base", "url":"http://moon_node:8003"}]
+    command : uvicorn main_orchestrator:app --host 0.0.0.0 --port 8000
+    depends_on:
+      - paris_node
+      - mariana_node
+      - moon_node
+    
+  paris_node:
+    build: .
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=sqlite:///./db/paris.db
+    command: uvicorn secret_guard:app --host 0.0.0.0 --port 8001
+    volumes:
+      - kms_data:/app/db
+  mariana_node:
+    build: .
+    ports:
+      - "8002:8002"
+    environment:
+      - DATABASE_URL=sqlite:///./db/mariana_trench.db
+    command: uvicorn secret_guard:app --host 0.0.0.0 --port 8002
+    volumes:
+      - kms_data:/app/db
+  
+  moon_node:
+    build: .
+    ports:
+      - "8003:8003"
+    environment:
+      - DATABASE_URL=sqlite:///./db/moon.db
+    command: uvicorn secret_guard:app --host 0.0.0.0 --port 8003
+    volumes:
+      - kms_data:/app/db
+    
+volumes:
+  kms_data:

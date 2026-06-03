@@ -140,6 +140,11 @@ SHOULD_EXPORT int lagrange_interpolation(int x, struct Share *shares, int n) {
 
 SHOULD_EXPORT void evaluate_share_batch(int *xs, int num_shares, int *secret_bytes, int num_bytes, int degree, int *out_ys_matrix) {
     int *coeffs = (int *)malloc((degree + 1) * sizeof(int));
+    if (coeffs == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        xs[0] = -1;
+        return;
+    }
     
     for(int b = 0; b < num_bytes; b++) {
         generate_random_coeffs(coeffs, degree);
@@ -162,7 +167,11 @@ SHOULD_EXPORT void evaluate_share_batch(int *xs, int num_shares, int *secret_byt
 
 SHOULD_EXPORT void lagrange_interpolation_batch(int *xs, int *ys_matrix, int num_shares, int num_bytes, int *out_secret) {
     struct Share *shares = (struct Share *)malloc(num_shares * sizeof(struct Share));
-    
+    if (shares == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        out_secret[0] = -1;
+        return;
+    }
     for(int b = 0; b < num_bytes; b++) {
         for(int i = 0; i < num_shares; i++) {
             shares[i].x = xs[i];

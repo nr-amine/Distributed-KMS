@@ -1,14 +1,22 @@
 import httpx
 import asyncio
+from os import getenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import py_engine_interpretor as py_interp
+import json
 
-networks = {
-    "Paris_testnet": "http://127.0.0.1:8001",
-    "Mariana_trench_testnet": "http://127.0.0.1:8002",
-    "Moon_base": "http://127.0.0.1:8003"
-}
+class NetworkConfig(BaseModel):
+    name: str
+    url: str
+
+networks_import = getenv("NETWORKS")
+if not networks_import:
+    raise ValueError("NETWORKS environment variable not set")
+
+networks = [NetworkConfig(name=net["name"], url=net["url"]) for net in json.loads(networks_import)]
+
+    
 
 NUM_SHARES = 3
 DEGREE = 1
@@ -27,6 +35,8 @@ class SecretCreateRequest(BaseModel):
 async def create_secret(request: SecretCreateRequest):
     aes_bytes = list(bytes.fromhex(request.secret))
     num_bytes = len(aes_bytes)
+    if num_bytes > 32:
+        raise HTTPException(status_code=400, detail="Secret too long, must be at most 32 bytes")
     
     xs = list(range(1, NUM_SHARES + 1))
     
@@ -36,8 +46,8 @@ async def create_secret(request: SecretCreateRequest):
     
     async with httpx.AsyncClient() as clt:
         tsks = []
-        for (net_name, net_url), share in zip(networks.items(), shares):
-            tsks.append(clt.post(f"{net_url}/store_share", json={"id": request.id, "share": share}))
+        for share, net in zip(shares, networks):
+            tsks.append(clt.post(f"{net.url}/store_share", json={"id": request.id, "share": share}))
 
         await asyncio.gather(*tsks, return_exceptions=True) 
     
@@ -48,8 +58,8 @@ async def create_secret(request: SecretCreateRequest):
 async def reconstruct_secret(secret_id : str):
     async with httpx.AsyncClient() as clt:
         tsks = []
-        for net_name, net_url in networks.items():
-            tsks.append(clt.get(f"{net_url}/get_share", params={"id": secret_id}))
+        for net in networks:
+            tsks.append(clt.get(f"{net.url}/get_share", params={"id": secret_id}))
 
         res = await asyncio.gather(*tsks, return_exceptions=True)
     
