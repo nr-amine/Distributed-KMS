@@ -190,7 +190,7 @@ Kill one of the node terminals (`Ctrl+C`), then run the reconstruct command agai
 
 ## Known Limitations
 
-- **No transport security (HTTP only).** Right now, shares are sent over plain HTTP. This means an attacker with network access could intercept shares in transit — which largely defeats the purpose of secret sharing. Switching to HTTPS (with mutual TLS between services) is the obvious next step before this would be production-ready.
+- **No transport security (HTTP only).** Right now shares are sent over plain HTTP. Which largely defeats the purpose of secret sharing. Switching to HTTPS is the obvious next step before this would be usable irl.
 - **Shared volume between nodes.** In the Docker setup, all nodes write to the same Docker volume (different files, same volume). In a real deployment, each node should run on a separate machine.
 - **No authentication.** Any client that can reach the orchestrator can store and retrieve secrets.
 
@@ -198,4 +198,4 @@ Kill one of the node terminals (`Ctrl+C`), then run the reconstruct command agai
 
 ## Project Context
 
-Built for an L2 Math-CS double major project. The mathematical foundation — Lagrange interpolation over a finite field — is part of the L2 algebra curriculum. The implementation challenge was getting it to run efficiently without any heavyweight dependencies, by rethinking the problem at the byte level rather than the key level.
+This is a portfolio/passion-project. The mathematical foundation like Lagrange interpolation over a finite field is part of the L2 algebra curriculum. The implementation challenge was getting it to run efficiently without any heavyweight dependencies.
