@@ -2,7 +2,7 @@
 
 A distributed Key Management System built for an L2 Math-CS project. It splits a 256-bit AES key into multiple shares using **Shamir's Secret Sharing**, with a lightweight C math engine and an async Python/FastAPI network layer.
 
-The system requires a quorum of **2 out of 3 nodes** to reconstruct the key. Any single node going offline is fully tolerated.
+The system requires only **2 out of 3 nodes** to reconstruct the key. Any single node going offline is fully tolerated.
 
 ---
 
