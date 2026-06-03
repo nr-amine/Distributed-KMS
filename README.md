@@ -38,7 +38,7 @@ Instead, the AES key is chunked into **32 individual bytes** (each in `[0, 255]`
 
 The finite field operations (modular arithmetic, modular inverse via extended Euclidean algorithm, Lagrange interpolation) are implemented in C. Python calls into the shared library (`Engine.so` / `Engine.dll`) via `ctypes`.
 
-A naive implementation would cross the Python/C boundary 32 times per key — once per byte. Instead, `Engine.c` exposes batch functions (`evaluate_share_batch`, `lagrange_interpolation_batch`) that accept the full byte array as a single pointer. Python makes one call and C handles the entire key in a loop.
+A naive implementation would cross the Python/C boundary 32 times per key, once per byte. Instead, `Engine.c` exposes batch functions (`evaluate_share_batch`, `lagrange_interpolation_batch`) that accept the full byte array as a single pointer. Python makes one call and C handles the entire key in a loop.
 
 ### 3. Fault-tolerant async distribution
 
@@ -76,7 +76,7 @@ The orchestrator distributes the shares or fragments to all nodes concurrently u
 
 ## Running with Docker (recommended)
 
-The entire stack — orchestrator and all three nodes — starts with a single command:
+The entire stack (orchestrator and all three nodes) starts with a single command:
 
 ```bash
 docker compose up --build
