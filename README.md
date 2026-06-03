@@ -191,6 +191,7 @@ Kill one of the node terminals (`Ctrl+C`), then run the reconstruct command agai
 ## Side Note
 
 - Right now shares are sent over plain HTTP. Which largely defeats the purpose of secret sharing. Switching to HTTPS is the obvious next step before this would be usable irl.
+- The system architecture and the math logic (like choosing GF(257) to avoid massive libraries) were 100% my own design. I definitely used AI autocomplete to help write the tedious, repetitive stuff, but I made sure to learn exactly how it worked and what each line did instead of just blindly pressing TAB.
 
 ## Project Context
 
