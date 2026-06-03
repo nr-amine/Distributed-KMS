@@ -190,7 +190,7 @@ Kill one of the node terminals (`Ctrl+C`), then run the reconstruct command agai
 
 ## Side Note
 
-- **No transport security (HTTP only).** Right now shares are sent over plain HTTP. Which largely defeats the purpose of secret sharing. Switching to HTTPS is the obvious next step before this would be usable irl.
+- Right now shares are sent over plain HTTP. Which largely defeats the purpose of secret sharing. Switching to HTTPS is the obvious next step before this would be usable irl.
 
 ## Project Context
 
