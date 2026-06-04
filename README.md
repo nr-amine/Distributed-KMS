@@ -1,4 +1,4 @@
-# Shamir's Secret Sharing — Distributed KMS
+# Shamir's Secret Sharing Distributed KMS
 
 A distributed Key Management System built for an L2 Math-CS project. It splits a 256-bit AES key into multiple shares using **Shamir's Secret Sharing**, with a lightweight C math engine and an async Python/FastAPI network layer.
 
