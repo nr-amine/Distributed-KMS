@@ -192,5 +192,5 @@ Kill one of the node terminals (`Ctrl+C`), then run the reconstruct command agai
 
 * **Plain HTTP Transport:** Shares are transmitted over unencrypted HTTP across nodes. A production deployment would mandate mutual TLS (mTLS) to protect shares in transit.
 * **Side-Channel Timing Leakage:** Modular arithmetic and Extended Euclidean inversion in `Engine.c` have variable execution paths and lack constant-time guarantees against microarchitectural cache-timing attacks.
-* **Field Expansion (GF257 vs GF2^8):** Using prime field GF257 avoids multi-precision integer dependencies, but coordinates require integer representations $[0, 256]$ rather than compact 1-to-1 byte mappings in GF2^8.
+* **Field Expansion (F257 vs F2^8):** Using prime field F257 avoids multi-precision integer dependencies, but coordinates require integer representations $[0, 256]$ rather than compact 1-to-1 byte mappings in F2^8.
 * **No Byzantine Verifiability:** The scheme assumes honest-but-curious nodes; corrupted or tampered shares will reconstruct an invalid secret unless verified externally
