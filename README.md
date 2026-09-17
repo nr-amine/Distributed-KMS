@@ -188,9 +188,9 @@ Kill one of the node terminals (`Ctrl+C`), then run the reconstruct command agai
 
 ---
 
-## Known Limitations & Security Trade-offs
+## Known Limitations
 
-* **Plain HTTP Transport:** Shares are transmitted over unencrypted HTTP across nodes. A production deployment would mandate mutual TLS (mTLS) to protect shares in transit.
-* **Side-Channel Timing Leakage:** Modular arithmetic and Extended Euclidean inversion in `Engine.c` have variable execution paths and lack constant-time guarantees against microarchitectural cache-timing attacks.
-* **Field Expansion (F257 vs F2^8):** Using prime field F257 avoids multi-precision integer dependencies, but coordinates require integer representations $[0, 256]$ rather than compact 1-to-1 byte mappings in F2^8.
-* **No Byzantine Verifiability:** The scheme assumes honest-but-curious nodes; corrupted or tampered shares will reconstruct an invalid secret unless verified externally
+* **Shares sent over plain HTTP:** Between Docker containers, shares are currently sent over HTTP. In a real setup, you'd want HTTPS/TLS so nobody can sniff shares on the network.
+* **Timing side-channels:** The C math engine uses standard loops for the extended Euclidean algorithm. It gets the job done for this project, but it isn't constant-time.
+* **GF(257) vs GF(2^8):** Working over the prime field GF(257) avoids linking big integer libraries like GMP. However, because share values can equal 256, coordinates need standard integer types (0 to 256) instead of fitting into raw 8-bit bytes.
+* **No share verification:** If a node gets corrupted and sends back modified shares, Lagrange interpolation will still compute a key, but it will be garbage. The nodes don't verify share signatures before reconstruction.
