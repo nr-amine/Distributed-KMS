@@ -1,15 +1,16 @@
 from fastapi import FastAPI, HTTPException, Depends
-import httpx
 from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, Integer, String, JSON
 from sqlalchemy.orm import declarative_base, sessionmaker
 from os import getenv
 
-DATABASE_URL = getenv("DATABASE_URL")
-engine = create_engine(DATABASE_URL)
+DATABASE_URL = getenv("DATABASE_URL", "sqlite:///./shares.db")
+
+connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+engine = create_engine(DATABASE_URL, connect_args=connect_args)
 LocalSession = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
-app = FastAPI()
+app = FastAPI(title="Distributed-KMS Share Node")
 
 def get_db():
     db = LocalSession()
@@ -21,8 +22,8 @@ def get_db():
 class Share(Base):
     __tablename__ = "shares"
     id = Column(String, primary_key=True, index=True)
-    x = Column(Integer)
-    y_arr = Column(JSON)
+    x = Column(Integer, nullable=False)
+    y_arr = Column(JSON, nullable=False)
 
 class ShareCoords(BaseModel):
     x: int
@@ -34,8 +35,6 @@ class ShareCreate(BaseModel):
 
 Base.metadata.create_all(bind=engine)
 
-
-
 @app.post("/store_share")
 def store_share(share: ShareCreate, db=Depends(get_db)):
     existing_share = db.query(Share).filter(Share.id == share.id).first()
@@ -45,7 +44,6 @@ def store_share(share: ShareCreate, db=Depends(get_db)):
     new_share = Share(id=share.id, x=share.share.x, y_arr=share.share.y_arr)
     db.add(new_share)
     db.commit()
-    db.refresh(new_share)
     return {"message": "Share stored successfully"}
 
 @app.get("/get_share")
@@ -54,3 +52,4 @@ def get_share(id: str, db=Depends(get_db)):
     if not share:
         raise HTTPException(status_code=404, detail="Share not found")
     return {"id": share.id, "share": {"x": share.x, "y_arr": share.y_arr}}
+

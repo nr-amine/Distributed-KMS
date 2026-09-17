@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 struct Share {
     int x;
@@ -17,11 +18,13 @@ int mod_div(int a, int b, int p);
 int mod_mult(int a, int b, int p);
 int mod_add(int a, int b, int p);
 int mod_sub(int a, int b, int p);
-int generate_random_signed_int();
-void generate_random_coeffs(int *coeffs, int degree);
+
+int generate_random_uint32(uint32_t *out);
+int get_random_coeff(int *out);
+int generate_random_coeffs(int *coeffs, int degree);
 void evaluate_share(struct Share *share, int x, int *coeffs, int degree);
 int lagrange_interpolation(int x, struct Share *shares, int n);
-void lagrange_interpolation_batch(int *xs, int *ys_matrix, int num_shares, int num_bytes, int *out_secret);
-void evaluate_share_batch(int *xs, int num_shares, int *secret_bytes, int num_bytes, int degree, int *out_ys_matrix);
+int lagrange_interpolation_batch(int *xs, int *ys_matrix, int num_shares, int num_bytes, int *out_secret);
+int evaluate_share_batch(int *xs, int num_shares, int *secret_bytes, int num_bytes, int degree, int *out_ys_matrix);
 
 #endif /* ENGINE_H */

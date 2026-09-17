@@ -188,11 +188,9 @@ Kill one of the node terminals (`Ctrl+C`), then run the reconstruct command agai
 
 ---
 
-## Side Note
+## Known Limitations & Security Trade-offs
 
-- Right now shares are sent over plain HTTP. Which largely defeats the purpose of secret sharing. Switching to HTTPS is the obvious next step before this would be usable irl.
-- The system architecture and the math logic (like choosing GF(257) to avoid massive libraries) were 100% my own design. I definitely used AI autocomplete to help write the tedious, repetitive stuff, but I made sure to learn exactly how it worked and what each line did instead of just blindly pressing TAB.
-
-## Project Context
-
-This is a portfolio/passion-project. the main challenge I faced was getting it to run efficiently without any heavyweight dependencies.
+* **Plain HTTP Transport:** Shares are transmitted over unencrypted HTTP across nodes. A production deployment would mandate mutual TLS (mTLS) to protect shares in transit.
+* **Side-Channel Timing Leakage:** Modular arithmetic and Extended Euclidean inversion in `Engine.c` have variable execution paths and lack constant-time guarantees against microarchitectural cache-timing attacks.
+* **Field Expansion ($\mathbb{F}_{257}$ vs $\mathbb{F}_{2^8}$):** Using prime field $\mathbb{F}_{257}$ avoids multi-precision integer dependencies, but coordinates require integer representations $[0, 256]$ rather than compact 1-to-1 byte mappings in $\mathbb{F}_{2^8}$.
+* **No Byzantine Verifiability:** The scheme assumes honest-but-curious nodes; corrupted or tampered shares will reconstruct an invalid secret unless verified against an external cryptographic digest.
